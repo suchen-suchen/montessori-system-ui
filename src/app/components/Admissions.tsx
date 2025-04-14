@@ -4,7 +4,7 @@ export default function Admissions() {
   return (
     <section
       id="admissions"
-      className="py-20 px-6 bg-cover bg-center bg-no-repeat"
+      className="py-20 scroll-mt-[160px] px-6 bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/background2.png')" }}
     >
       <div className="max-w-4xl mx-auto text-center bg-white/20 backdrop-blur-lg p-10 rounded-xl shadow-2xl border border-white/20">
@@ -23,6 +23,7 @@ export default function Admissions() {
         <a
           href="https://www.facebook.com/SCMSSHS23"
           target="_blank"
+          rel="noopener noreferrer"
           className="inline-block bg-blue-700 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-800 transition font-semibold"
         >
           Contact Us on Facebook

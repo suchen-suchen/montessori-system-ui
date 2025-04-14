@@ -5,9 +5,10 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="py-24 px-6 bg-gradient-to-br from-[#dbeafe] via-[#e0f2fe] to-[#fef9c3] text-blue-900"
+      className="py-24 scroll-mt-[160px] px-6 bg-gradient-to-br from-[#dbeafe] via-[#e0f2fe] to-[#fef9c3] text-blue-900"
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center gap-10">
+        {/* Contact Image */}
         <div className="w-full max-w-xl rounded-lg shadow-xl overflow-hidden h-auto md:h-[600px]">
           <Image
             src="/contact1.png"
@@ -17,6 +18,8 @@ export default function Contact() {
             className="w-full h-auto md:h-full object-cover"
           />
         </div>
+
+        {/* Facebook Embed */}
         <div className="w-full max-w-xl rounded-lg shadow-xl overflow-hidden h-auto md:h-[600px]">
           <iframe
             title="SCMS Facebook Page"
@@ -27,10 +30,13 @@ export default function Contact() {
             scrolling="no"
             frameBorder="0"
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
       </div>
 
+      {/* Google Maps Embed */}
       <div className="mt-16 max-w-6xl mx-auto shadow-lg rounded-lg overflow-hidden">
         <iframe
           title="SCMS Map Location"

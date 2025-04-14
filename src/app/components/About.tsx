@@ -3,9 +3,11 @@ import Image from "next/image";
 
 export default function About() {
   return (
-    <section id="about" className="py-20 px-4 sm:px-8 bg-blue-900 text-white">
+    <section
+      id="about"
+      className="py-20 scroll-mt-[160px] px-4 sm:px-8 bg-blue-900 text-white"
+    >
       <div className="max-w-6xl mx-auto space-y-20">
-
         {/* VISION, MISSION, PHILOSOPHY, VALUES */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Left Side: Vision, Mission, etc. */}
