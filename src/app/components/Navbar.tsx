@@ -1,5 +1,6 @@
 'use client';
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -9,16 +10,16 @@ export default function Navbar() {
         className="fixed top-0 left-0 w-full z-50 h-[160px] sm:h-[100px] bg-cover bg-center shadow"
         style={{ backgroundImage: "url('/background.png')" }}
       >
-        <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left h-full">
+        <div className="container flex flex-col items-center h-full gap-2 px-4 py-3 mx-auto text-center sm:flex-row sm:gap-4 sm:text-left">
           <Image
             src="/logo.png"
             alt="SCMS SHS"
             width={80}
             height={80}
             sizes="(max-width: 768px) 60px, 80px"
-            className="w-20 sm:w-28 h-auto"
+            className="w-20 h-auto sm:w-28"
           />
-          <h1 className="text-xl md:text-2xl font-bold text-white drop-shadow-sm">
+          <h1 className="text-xl font-bold text-white md:text-2xl drop-shadow-sm">
             St. Christopher Montessori School of Santa Rosa, Inc.
           </h1>
         </div>
@@ -26,13 +27,13 @@ export default function Navbar() {
 
       {/* Navigation Menu */}
       <div className="bg-white shadow-sm border-t border-b border-gray-200 sticky top-[160px] sm:top-[100px] z-40">
-        <div className="container mx-auto px-4 py-3">
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm font-bold text-gray-700">
-            <a href="#about" className="hover:text-blue-700 transition">About</a>
-            <a href="#tracks" className="hover:text-blue-700 transition">Tracks</a>
-            <a href="#admissions" className="hover:text-blue-700 transition">Admissions</a>
-            <a href="#contact" className="hover:text-blue-700 transition">Contact</a>
-            <a href="#" className="hover:text-blue-700 transition">Login</a>
+        <div className="container px-4 py-3 mx-auto">
+          <nav className="flex flex-wrap justify-center text-sm font-bold text-gray-700 gap-x-6 gap-y-3">
+            <a href="#about" className="transition hover:text-blue-700">About</a>
+            <a href="#tracks" className="transition hover:text-blue-700">Tracks</a>
+            <a href="#admissions" className="transition hover:text-blue-700">Admissions</a>
+            <a href="#contact" className="transition hover:text-blue-700">Contact</a>
+            <Link href="/login" className="transition hover:text-blue-700">Login</Link>
           </nav>
         </div>
       </div>
