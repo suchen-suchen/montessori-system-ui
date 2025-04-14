@@ -1,42 +1,57 @@
 'use client';
-import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
 
-export default function Navbar() {
+export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
-    <>
-      {/* Header Top (Logo) */}
-      <header
-        className="fixed top-0 left-0 w-full z-50 h-[160px] sm:h-[100px] bg-cover bg-center shadow"
-        style={{ backgroundImage: "url('/background.png')" }}
-      >
-        <div className="container flex flex-col items-center h-full gap-2 px-4 py-3 mx-auto text-center sm:flex-row sm:gap-4 sm:text-left">
-          <Image
-            src="/logo.png"
-            alt="SCMS SHS"
-            width={80}
-            height={80}
-            sizes="(max-width: 768px) 60px, 80px"
-            className="w-20 h-auto sm:w-28"
-          />
-          <h1 className="text-xl font-bold text-white md:text-2xl drop-shadow-sm">
-            St. Christopher Montessori School of Santa Rosa, Inc.
-          </h1>
-        </div>
-      </header>
+    <section className="flex items-center justify-center min-h-screen px-4 sm:px-6 bg-gradient-to-br from-blue-100 via-yellow-50 to-white">
+      <div className="relative w-full max-w-md p-8 border shadow-2xl rounded-2xl bg-white/30 backdrop-blur-xl border-white/20 sm:p-10">
+        <h2 className="mb-6 text-2xl font-bold text-center text-blue-800 sm:text-3xl">Welcome Back</h2>
 
-      {/* Navigation Menu */}
-      <div className="bg-white shadow-sm border-t border-b border-gray-200 sticky top-[160px] sm:top-[100px] z-40">
-        <div className="container px-4 py-3 mx-auto">
-          <nav className="flex flex-wrap justify-center text-sm font-bold text-gray-700 gap-x-6 gap-y-3">
-            <a href="#about" className="transition hover:text-blue-700">About</a>
-            <a href="#tracks" className="transition hover:text-blue-700">Tracks</a>
-            <a href="#admissions" className="transition hover:text-blue-700">Admissions</a>
-            <a href="#contact" className="transition hover:text-blue-700">Contact</a>
-            <Link href="/login" className="transition hover:text-blue-700">Login</Link>
-          </nav>
-        </div>
+        <form className="space-y-6">
+          {/* Email Input */}
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
+            <input
+              type="email"
+              placeholder="you@email.com"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+
+          {/* Password Input */}
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute text-sm text-blue-600 -translate-y-1/2 right-3 top-1/2 hover:underline"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 font-semibold text-white transition rounded-lg shadow-lg bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p className="mt-6 text-sm text-center text-gray-700">
+          Don’t have an account? <a href="#" className="font-semibold text-blue-700 hover:underline">Sign up</a>
+        </p>
       </div>
-    </>
+    </section>
   );
 }
