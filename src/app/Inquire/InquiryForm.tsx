@@ -30,16 +30,16 @@ export default function InquiryForm() {
   };
 
   return (
-    <section className="bg-white rounded-xl shadow-xl p-6 sm:p-10">
-      <h2 className="text-2xl font-bold text-center text-blue-800 mb-8">
+    <section className="p-6 bg-white shadow-xl rounded-xl sm:p-10">
+      <h2 className="mb-8 text-2xl font-bold text-center text-blue-800">
         Senior High School Enrollment Inquiry
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6 text-gray-800">
         {/* 🧑 Student Info */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Student Information</h3>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <h3 className="mb-2 text-lg font-semibold">Student Information</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
             <input
               name="studentName"
               type="text"
@@ -54,7 +54,7 @@ export default function InquiryForm() {
               type="date"
               value={formData.birthdate}
               onChange={handleChange}
-              className="form-input"
+              className="text-gray-800 placeholder-gray-500 bg-white form-input"
               required
             />
             <select
@@ -103,8 +103,8 @@ export default function InquiryForm() {
 
         {/* 👨‍👩‍👧 Parent Info */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Parent/Guardian Information</h3>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <h3 className="mb-2 text-lg font-semibold">Parent/Guardian Information</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
             <input
               name="parentName"
               type="text"
@@ -128,8 +128,8 @@ export default function InquiryForm() {
 
         {/* 🏫 Previous School */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Previous School Attended</h3>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <h3 className="mb-2 text-lg font-semibold">Previous School Attended</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
             <input
               name="schoolName"
               type="text"
@@ -158,14 +158,14 @@ export default function InquiryForm() {
             value={formData.message}
             onChange={handleChange}
             rows={4}
-            className="w-full border rounded-lg px-4 py-3 bg-white text-gray-800 placeholder-gray-500 focus:ring-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 text-gray-800 placeholder-gray-500 bg-white border rounded-lg focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
         {/* ✅ Submit */}
         <button
           type="submit"
-          className="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg shadow transition"
+          className="w-full py-3 font-semibold text-white transition bg-blue-700 rounded-lg shadow hover:bg-blue-800"
         >
           Submit Inquiry
         </button>
