@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link"; // ✅ For client-side routing
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +26,26 @@ export default function LoginPage() {
         </div>
 
         {/* 💳 Login Card */}
-        <div className="bg-white px-8 py-5 sm:px-10 sm:py-6 rounded-xl shadow-2xl backdrop-blur-xl border border-white/30 w-full sm:w-[480px]">
+        <div className="bg-white px-8 py-5 sm:px-10 sm:py-6 rounded-xl shadow-2xl backdrop-blur-xl border border-white/30 w-full sm:w-[480px] relative">
+          
+          {/* 🔙 Back Button */}
+          <Link
+            href="/"
+            className="absolute text-blue-600 transition left-4 top-4 hover:text-blue-800"
+            aria-label="Go back"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+
           <h2 className="mb-4 text-xl font-bold text-center text-blue-800">Login</h2>
 
           <form className="space-y-3">
