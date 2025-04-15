@@ -49,15 +49,17 @@ export default function InquiryForm() {
               className="form-input"
               required
             />
-            <input
-              name="birthdate"
-              type="text"
-              value={formData.birthdate}
-              placeholder="Birthdate"
-              onFocus={(e) => (e.target.type = 'date')}
-              onChange={handleChange}
-              className="text-gray-800 placeholder-gray-500 bg-white form-input"
-            />
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Birthdate</label>
+              <input
+                name="birthdate"
+                type="date"
+                value={formData.birthdate}
+                onChange={handleChange}
+                className="text-gray-800 bg-white form-input"
+                required
+              />
+            </div>
             <select
               name="gender"
               value={formData.gender}
