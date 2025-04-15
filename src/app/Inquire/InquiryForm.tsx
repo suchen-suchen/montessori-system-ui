@@ -54,8 +54,7 @@ export default function InquiryForm() {
               type="date"
               value={formData.birthdate}
               onChange={handleChange}
-              className="text-gray-800 placeholder-gray-500 bg-white form-input"
-              required
+              className="text-gray-800 placeholder-gray-500 bg-white appearance-none form-input focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <select
               name="gender"
