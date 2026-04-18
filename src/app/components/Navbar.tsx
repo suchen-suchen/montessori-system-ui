@@ -1,6 +1,6 @@
 'use client';
 import Image from "next/image";
-import Link from "next/link"; // 👈 import Next.js router link
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -32,8 +32,10 @@ export default function Navbar() {
             <a href="#admissions" className="transition hover:text-blue-700">Admissions</a>
             <a href="#contact" className="transition hover:text-blue-700">Contact</a>
 
-            {/* ✅ Fixed Login link using Next.js Link */}
-            <Link href="/login" className="transition hover:text-blue-700">Login</Link>
+            {/* ✅ FIXED LOGIN ROUTE */}
+            <Link href="/login" className="transition hover:text-blue-700">
+              Login
+            </Link>
           </nav>
         </div>
       </div>

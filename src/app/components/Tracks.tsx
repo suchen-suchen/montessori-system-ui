@@ -1,6 +1,22 @@
 'use client';
 import Image from "next/image";
-import { tracks } from "../data/tracks";
+
+const tracks = [
+  {
+    name: "Academic Cluster",
+    image: "/academic.png",
+    clusters: ["STEM", "ABM", "HUMSS", "GAS"],
+  },
+  {
+    name: "Technical-Professional Cluster",
+    image: "/techpro.png",
+    clusters: [
+      "ICT SUPPORT AND COMPUTER PROGRAMMING",
+      "AUTOMOTIVE AND SMALL ENGINE TECHNOLOGIES",
+      "HOSPITALITY AND TOURISM",
+    ],
+  },
+];
 
 export default function Tracks() {
   return (
@@ -9,9 +25,12 @@ export default function Tracks() {
       className="py-20 px-6 bg-gradient-to-br from-[#dbeafe] via-[#fef3c7] to-[#ffffff]"
     >
       <div className="max-w-6xl mx-auto text-center">
-        <h3 className="text-3xl font-bold text-blue-800 mb-10">Academic Tracks</h3>
+        <h3 className="text-3xl font-bold text-blue-800 mb-10">
+          Senior High School Tracks
+        </h3>
+
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-cover bg-center bg-no-repeat p-6 rounded-xl shadow-2xl"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-cover bg-center bg-no-repeat p-6 rounded-xl shadow-2xl"
           style={{ backgroundImage: "url('/background1.png')" }}
         >
           {tracks.map((track) => (
@@ -24,10 +43,24 @@ export default function Tracks() {
                 alt={track.name}
                 width={220}
                 height={220}
-                className="mx-auto mb-6 w-auto h-[200px] object-contain"
+                className="mx-auto mb-6 w-auto h-[350px] object-contain"
               />
-              <h4 className="text-2xl font-bold text-blue-700 mb-3">{track.name}</h4>
-              <p className="text-base font-medium text-gray-800">{track.description}</p>
+
+              <h4 className="text-2xl font-bold text-blue-700 mb-4">
+                {track.name}
+              </h4>
+
+              <ul className="flex flex-wrap justify-center gap-2">
+                {track.clusters.map((cluster, index) => (
+                  <li
+                    key={index}
+                    className="bg-white/40 rounded px-3 py-1"
+                  >
+                    {cluster}
+                  </li>
+                ))}
+              </ul>
+
             </div>
           ))}
         </div>

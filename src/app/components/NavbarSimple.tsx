@@ -28,15 +28,17 @@ export default function NavbarSimple() {
 
       {/* 🔗 Home Link Only */}
       <div className="bg-white shadow-sm border-t border-b border-gray-200 sticky top-[160px] sm:top-[100px] z-40">
-        <div className="container px-4 py-3 mx-auto text-center">
+      <div className="container px-4 py-3 mx-auto">
+        <nav className="flex justify-center text-sm font-bold text-gray-700">
           <Link
             href="/"
-            className="text-sm sm:text-base font-bold text-gray-700 hover:text-blue-700 transition"
+            className="transition hover:text-blue-700"
           >
             Home
           </Link>
-        </div>
+        </nav>
       </div>
+    </div>
     </>
   );
 }

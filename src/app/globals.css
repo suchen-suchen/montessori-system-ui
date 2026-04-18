@@ -40,7 +40,7 @@ body {
   animation: fade-in 0.8s ease-in-out forwards;
 }
 
-/* 🌈 Transition helpers (optional but nice) */
+/* 🌈 Transition helpers */
 .transition-base {
   transition: all 0.3s ease-in-out;
 }
@@ -51,10 +51,51 @@ body {
 .hover-scale:hover {
   transform: scale(1.05);
 }
+
+/* ========================= */
+/* ✅ FORM STYLING (UPDATED) */
+/* ========================= */
+
 .form-input {
-  @apply w-full border rounded-lg px-4 py-2 text-gray-800 bg-white placeholder-gray-500 focus:ring-blue-500 focus:outline-none;
+  @apply w-full border border-gray-400 rounded-lg px-4 py-2 bg-white text-gray-900 placeholder-gray-400 focus:ring-blue-500 focus:outline-none;
   appearance: none;
 }
+
+/* 🔥 UNIVERSAL FIX FOR ALL DEVICES */
+
+/* Force readable input text */
+input,
+select,
+textarea {
+  color: #111827 !important; /* dark text */
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Fix placeholder visibility */
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+/* Fix labels globally */
+label {
+  color: #1f2937 !important;
+}
+
+/* Fix date input text (important for some browsers) */
 input[type="date"]::-webkit-date-and-time-value {
-  color: #1f2937; /* text-gray-800 */
+  color: #1f2937;
+}
+
+/* Fix Chrome autofill (VERY IMPORTANT) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #111827 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
