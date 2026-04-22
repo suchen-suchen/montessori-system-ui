@@ -3,7 +3,10 @@ import { pool } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const body = await req.json();
+
+    const email = String(body.email ?? '').trim();
+    const password = String(body.password ?? '').trim();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -12,79 +15,57 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // =========================
-    // ADMIN
-    // =========================
-    const [adminRows]: any = await pool.execute(
-      `SELECT * FROM admins WHERE email = ? LIMIT 1`,
+    const [rows]: any = await pool.execute(
+      `
+      SELECT
+        id,
+        full_name,
+        email,
+        password,
+        role,
+        is_active,
+        dashboard_access
+      FROM users
+      WHERE email = ?
+      LIMIT 1
+      `,
       [email]
     );
 
-    if (adminRows.length > 0) {
-      const admin = adminRows[0];
-
-      if (admin.password === password) {
-        return NextResponse.json({
-          success: true,
-          user: {
-            id: admin.id,
-            email: admin.email,
-            role: 'admin',
-          },
-        });
-      }
+    if (rows.length === 0) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid email or password.' },
+        { status: 401 }
+      );
     }
 
-    // =========================
-    // TEACHER
-    // =========================
-    const [teacherRows]: any = await pool.execute(
-      `SELECT * FROM teachers WHERE email = ? LIMIT 1`,
-      [email]
-    );
+    const user = rows[0];
 
-    if (teacherRows.length > 0) {
-      const teacher = teacherRows[0];
-
-      if (teacher.password === password) {
-        return NextResponse.json({
-          success: true,
-          user: {
-            id: teacher.id,
-            email: teacher.email,
-            role: 'teacher',
-          },
-        });
-      }
+    if (user.password !== password) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid email or password.' },
+        { status: 401 }
+      );
     }
 
-    // =========================
-    // STUDENT
-    // =========================
-    const [studentRows]: any = await pool.execute(
-      `SELECT * FROM students WHERE email = ? LIMIT 1`,
-      [email]
-    );
-
-    if (studentRows.length > 0) {
-      const student = studentRows[0];
-
-      if (student.password === password) {
-        return NextResponse.json({
-          success: true,
-          user: {
-            id: student.id,
-            email: student.email,
-            role: 'student',
-          },
-        });
-      }
+    if (Number(user.is_active) !== 1) {
+      return NextResponse.json(
+        { success: false, message: 'This account is inactive.' },
+        { status: 403 }
+      );
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid email or password' },
-      { status: 401 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: 'Login successful.',
+      user: {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        role: user.role,
+        dashboard_access: user.dashboard_access,
+      },
+    });
   } catch (error) {
     console.error('LOGIN ERROR:', error);
 

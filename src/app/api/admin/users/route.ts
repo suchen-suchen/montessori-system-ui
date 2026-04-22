@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 
+const VALID_ROLES = ['admin', 'teacher', 'student'] as const;
+const ALLOWED_CREATE_ROLES = ['teacher', 'student'] as const;
+
 export async function GET() {
   try {
     const [rows]: any = await pool.execute(
@@ -36,33 +39,33 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const {
-      full_name,
-      email,
-      password,
-      role,
-      is_active,
-      dashboard_access,
-    } = await req.json();
+    const body = await req.json();
 
-    if (!full_name || !email || !password || !role || !dashboard_access) {
+    const full_name = String(body.full_name ?? '').trim();
+    const email = String(body.email ?? '').trim();
+    const password = String(body.password ?? '').trim();
+    const role = String(body.role ?? '').trim().toLowerCase();
+
+    if (!full_name || !email || !password || !role) {
       return NextResponse.json(
         { success: false, message: 'Please fill in all required fields.' },
         { status: 400 }
       );
     }
 
-    const validRoles = ['admin', 'teacher', 'student'];
-    if (!validRoles.includes(role)) {
+    if (!VALID_ROLES.includes(role as (typeof VALID_ROLES)[number])) {
       return NextResponse.json(
         { success: false, message: 'Invalid role.' },
         { status: 400 }
       );
     }
 
-    if (!validRoles.includes(dashboard_access)) {
+    if (!ALLOWED_CREATE_ROLES.includes(role as (typeof ALLOWED_CREATE_ROLES)[number])) {
       return NextResponse.json(
-        { success: false, message: 'Invalid dashboard access.' },
+        {
+          success: false,
+          message: 'Creating admin account is not allowed from this page.',
+        },
         { status: 400 }
       );
     }
@@ -79,7 +82,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const activeValue = Number(is_active) === 0 ? 0 : 1;
+    const activeValue = Number(body.is_active) === 0 ? 0 : 1;
+    const dashboard_access = role;
 
     const [result]: any = await pool.execute(
       `

@@ -38,17 +38,19 @@ export default function LoginPage() {
 
       localStorage.setItem('user', JSON.stringify(user));
 
-      if (user.role === 'admin') {
+      const access = user.dashboard_access || user.role;
+
+      if (access === 'admin') {
         router.push('/admin/dashboard');
         return;
       }
 
-      if (user.role === 'teacher') {
+      if (access === 'teacher') {
         router.push('/teacher/dashboard');
         return;
       }
 
-      if (user.role === 'student') {
+      if (access === 'student') {
         router.push('/student/dashboard');
         return;
       }
@@ -92,7 +94,11 @@ export default function LoginPage() {
               stroke="currentColor"
               className="w-5 h-5"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </Link>
 

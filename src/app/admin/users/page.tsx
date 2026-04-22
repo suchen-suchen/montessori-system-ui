@@ -1,17 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
+
+type UserRole = 'admin' | 'teacher' | 'student';
 
 type UserRow = {
   id: number;
   full_name: string;
   email: string;
   password: string;
-  role: 'admin' | 'teacher' | 'student';
+  role: UserRole;
   is_active: number;
-  dashboard_access: 'admin' | 'teacher' | 'student';
+  dashboard_access: UserRole;
   created_at: string;
   updated_at: string;
 };
@@ -20,9 +22,9 @@ type UserForm = {
   full_name: string;
   email: string;
   password: string;
-  role: 'admin' | 'teacher' | 'student';
+  role: UserRole;
   is_active: number;
-  dashboard_access: 'admin' | 'teacher' | 'student';
+  dashboard_access: UserRole;
 };
 
 const initialForm: UserForm = {
@@ -37,6 +39,7 @@ const initialForm: UserForm = {
 export default function UserManagementPage() {
   const router = useRouter();
   const pathname = usePathname();
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -51,10 +54,12 @@ export default function UserManagementPage() {
   const [editForm, setEditForm] = useState<UserForm>(initialForm);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [resetPassword, setResetPassword] = useState('');
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
   const homeActive = pathname === '/admin/dashboard';
   const enrollmentActive = pathname.startsWith('/admin/enrollments');
   const userManagementActive = pathname.startsWith('/admin/users');
+  const gradesManagementActive = pathname.startsWith('/admin/grades');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -73,6 +78,23 @@ export default function UserManagementPage() {
 
     fetchUsers();
   }, [router]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (!menuRef.current) return;
+      if (!menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null);
+      }
+    }
+
+    if (openMenuId !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openMenuId]);
 
   async function fetchUsers() {
     try {
@@ -111,15 +133,17 @@ export default function UserManagementPage() {
       password: user.password || '',
       role: user.role,
       is_active: user.is_active,
-      dashboard_access: user.dashboard_access,
+      dashboard_access: user.role,
     });
     setShowEditModal(true);
+    setOpenMenuId(null);
   }
 
   function openResetModal(user: UserRow) {
     setSelectedUserId(user.id);
     setResetPassword(user.password || '');
     setShowResetModal(true);
+    setOpenMenuId(null);
   }
 
   function handleCreateChange(
@@ -127,10 +151,21 @@ export default function UserManagementPage() {
   ) {
     const { name, value } = e.target;
 
-    setCreateForm((prev) => ({
-      ...prev,
-      [name]: name === 'is_active' ? Number(value) : value,
-    }));
+    setCreateForm((prev) => {
+      if (name === 'role') {
+        const roleValue = value as UserRole;
+        return {
+          ...prev,
+          role: roleValue,
+          dashboard_access: roleValue,
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: name === 'is_active' ? Number(value) : value,
+      };
+    });
   }
 
   function handleEditChange(
@@ -138,10 +173,21 @@ export default function UserManagementPage() {
   ) {
     const { name, value } = e.target;
 
-    setEditForm((prev) => ({
-      ...prev,
-      [name]: name === 'is_active' ? Number(value) : value,
-    }));
+    setEditForm((prev) => {
+      if (name === 'role') {
+        const roleValue = value as UserRole;
+        return {
+          ...prev,
+          role: roleValue,
+          dashboard_access: roleValue,
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: name === 'is_active' ? Number(value) : value,
+      };
+    });
   }
 
   async function handleCreateSubmit(e: React.FormEvent) {
@@ -150,10 +196,15 @@ export default function UserManagementPage() {
     try {
       setSaving(true);
 
+      const payload = {
+        ...createForm,
+        dashboard_access: createForm.role,
+      };
+
       const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createForm),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -181,10 +232,15 @@ export default function UserManagementPage() {
     try {
       setSaving(true);
 
+      const payload = {
+        ...editForm,
+        dashboard_access: editForm.role,
+      };
+
       const res = await fetch(`/api/admin/users/${selectedUserId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -222,7 +278,7 @@ export default function UserManagementPage() {
           password: user.password,
           role: user.role,
           is_active: user.is_active ? 0 : 1,
-          dashboard_access: user.dashboard_access,
+          dashboard_access: user.role,
         }),
       });
 
@@ -232,10 +288,15 @@ export default function UserManagementPage() {
         throw new Error(data.message || 'Failed to update account status');
       }
 
-      alert(`Account ${user.is_active ? 'deactivated' : 'activated'} successfully.`);
+      alert(
+        `Account ${user.is_active ? 'deactivated' : 'activated'} successfully.`
+      );
+      setOpenMenuId(null);
       fetchUsers();
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to update account status');
+      alert(
+        error instanceof Error ? error.message : 'Failed to update account status'
+      );
     }
   }
 
@@ -257,6 +318,7 @@ export default function UserManagementPage() {
       }
 
       alert('User account deleted successfully.');
+      setOpenMenuId(null);
       fetchUsers();
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Failed to delete account');
@@ -285,7 +347,7 @@ export default function UserManagementPage() {
           password: resetPassword,
           role: targetUser.role,
           is_active: targetUser.is_active,
-          dashboard_access: targetUser.dashboard_access,
+          dashboard_access: targetUser.role,
         }),
       });
 
@@ -323,7 +385,7 @@ export default function UserManagementPage() {
 
   return (
     <section className="min-h-screen bg-[#eef4fb]">
-      <div className="flex min-h-screen">
+      <div className="min-h-screen">
         <aside className="fixed left-0 top-0 z-40 flex h-screen w-72 flex-col bg-[#243b55] text-white shadow-2xl">
           <div className="px-6 py-6 border-b border-white/10">
             <div className="flex items-center gap-4">
@@ -375,6 +437,16 @@ export default function UserManagementPage() {
               >
                 User Account Management
               </button>
+
+              <button
+                onClick={() => router.push('/admin/grades')}
+                className={`w-full px-4 py-3 rounded-2xl text-left font-semibold ${
+                  gradesManagementActive ? 'bg-white/20' : 'hover:bg-white/10'
+                }`}
+              >
+                Grades Management
+              </button>
+
             </div>
           </nav>
 
@@ -388,8 +460,8 @@ export default function UserManagementPage() {
           </div>
         </aside>
 
-        <main className="w-full p-8 ml-72">
-          <div className="overflow-hidden bg-white shadow-xl rounded-3xl">
+        <main className="min-w-0 p-8 ml-72">
+          <div className="flex min-h-[calc(100vh-64px)] flex-col overflow-hidden rounded-3xl bg-white shadow-xl">
             <div className="px-6 py-5 border-b bg-gray-50">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
@@ -420,11 +492,9 @@ export default function UserManagementPage() {
             {loading ? (
               <div className="p-8 text-lg text-gray-600">Loading user accounts...</div>
             ) : filteredUsers.length === 0 ? (
-              <div className="p-8 text-lg text-gray-600">
-                No user accounts found.
-              </div>
+              <div className="p-8 text-lg text-gray-600">No user accounts found.</div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="flex-1 overflow-x-auto">
                 <table className="min-w-full border-collapse">
                   <thead className="bg-[#e9eef5]">
                     <tr>
@@ -482,38 +552,57 @@ export default function UserManagementPage() {
                           {new Date(item.created_at).toLocaleDateString('en-US')}
                         </td>
                         <td className="px-6 py-4 text-sm border-b">
-                          <div className="flex flex-wrap gap-2">
+                          <div className="relative inline-block text-left">
                             <button
-                              onClick={() => openEditModal(item)}
-                              className="px-4 py-2 font-medium text-white transition rounded-xl bg-amber-500 hover:bg-amber-600"
+                              type="button"
+                              onClick={() =>
+                                setOpenMenuId(openMenuId === item.id ? null : item.id)
+                              }
+                              className="rounded-xl bg-[#243b55] px-4 py-2 font-medium text-white transition hover:bg-[#1d3148]"
                             >
-                              Edit
+                              Manage
                             </button>
 
-                            <button
-                              onClick={() => handleToggleActive(item)}
-                              className={`rounded-xl px-4 py-2 font-medium text-white transition ${
-                                item.is_active
-                                  ? 'bg-slate-600 hover:bg-slate-700'
-                                  : 'bg-emerald-600 hover:bg-emerald-700'
-                              }`}
-                            >
-                              {item.is_active ? 'Deactivate' : 'Activate'}
-                            </button>
+                            {openMenuId === item.id && (
+                              <div
+                                ref={menuRef}
+                                className="absolute right-0 z-20 w-56 mt-2 overflow-hidden bg-white border border-gray-200 shadow-xl rounded-2xl"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => openEditModal(item)}
+                                  className="block w-full px-4 py-3 text-sm font-medium text-left text-gray-700 transition hover:bg-blue-50"
+                                >
+                                  Edit Account
+                                </button>
 
-                            <button
-                              onClick={() => openResetModal(item)}
-                              className="px-4 py-2 font-medium text-white transition bg-blue-700 rounded-xl hover:bg-blue-800"
-                            >
-                              Reset Password
-                            </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleActive(item)}
+                                  className="block w-full px-4 py-3 text-sm font-medium text-left text-gray-700 transition hover:bg-blue-50"
+                                >
+                                  {item.is_active
+                                    ? 'Deactivate Account'
+                                    : 'Activate Account'}
+                                </button>
 
-                            <button
-                              onClick={() => handleDelete(item)}
-                              className="px-4 py-2 font-medium text-white transition bg-red-600 rounded-xl hover:bg-red-700"
-                            >
-                              Delete
-                            </button>
+                                <button
+                                  type="button"
+                                  onClick={() => openResetModal(item)}
+                                  className="block w-full px-4 py-3 text-sm font-medium text-left text-gray-700 transition hover:bg-blue-50"
+                                >
+                                  Reset Password
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleDelete(item)}
+                                  className="block w-full px-4 py-3 text-sm font-medium text-left text-red-600 transition hover:bg-red-50"
+                                >
+                                  Delete Account
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -527,12 +616,12 @@ export default function UserManagementPage() {
       </div>
 
       {showCreateModal && (
-        <ModalShell title="Create User Account" onClose={() => setShowCreateModal(false)}>
+        <ModalShell
+          title="Create User Account"
+          onClose={() => setShowCreateModal(false)}
+        >
           <form onSubmit={handleCreateSubmit} className="space-y-4">
-            <FormFields
-              form={createForm}
-              onChange={handleCreateChange}
-            />
+            <FormFields form={createForm} onChange={handleCreateChange} />
 
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -555,12 +644,12 @@ export default function UserManagementPage() {
       )}
 
       {showEditModal && (
-        <ModalShell title="Edit User Account" onClose={() => setShowEditModal(false)}>
+        <ModalShell
+          title="Edit User Account"
+          onClose={() => setShowEditModal(false)}
+        >
           <form onSubmit={handleEditSubmit} className="space-y-4">
-            <FormFields
-              form={editForm}
-              onChange={handleEditChange}
-            />
+            <FormFields form={editForm} onChange={handleEditChange} />
 
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -583,7 +672,10 @@ export default function UserManagementPage() {
       )}
 
       {showResetModal && (
-        <ModalShell title="Reset Password" onClose={() => setShowResetModal(false)}>
+        <ModalShell
+          title="Reset Password"
+          onClose={() => setShowResetModal(false)}
+        >
           <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
@@ -632,6 +724,8 @@ function FormFields({
     'w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600';
   const labelClass = 'mb-1 block text-sm font-medium text-gray-700';
 
+  const isExistingAdmin = form.role === 'admin';
+
   return (
     <>
       <div>
@@ -670,19 +764,28 @@ function FormFields({
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className={labelClass}>Role</label>
-          <select
-            name="role"
-            value={form.role}
-            onChange={onChange}
-            className={inputClass}
-          >
-            <option value="admin">admin</option>
-            <option value="teacher">teacher</option>
-            <option value="student">student</option>
-          </select>
+
+          {isExistingAdmin ? (
+            <input
+              type="text"
+              value="admin"
+              className={`${inputClass} bg-gray-100 uppercase`}
+              disabled
+            />
+          ) : (
+            <select
+              name="role"
+              value={form.role}
+              onChange={onChange}
+              className={inputClass}
+            >
+              <option value="teacher">teacher</option>
+              <option value="student">student</option>
+            </select>
+          )}
         </div>
 
         <div>
@@ -697,20 +800,16 @@ function FormFields({
             <option value={0}>Inactive</option>
           </select>
         </div>
+      </div>
 
-        <div>
-          <label className={labelClass}>Dashboard Access</label>
-          <select
-            name="dashboard_access"
-            value={form.dashboard_access}
-            onChange={onChange}
-            className={inputClass}
-          >
-            <option value="admin">admin</option>
-            <option value="teacher">teacher</option>
-            <option value="student">student</option>
-          </select>
-        </div>
+      <div>
+        <label className={labelClass}>Dashboard Access</label>
+        <input
+          type="text"
+          value={form.role}
+          className={`${inputClass} bg-gray-100 uppercase`}
+          disabled
+        />
       </div>
     </>
   );

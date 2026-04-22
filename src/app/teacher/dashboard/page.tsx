@@ -81,7 +81,7 @@ export default function TeacherDashboardPage() {
     <section className="min-h-screen bg-gradient-to-br from-[#eef4fb] via-[#f5f8fc] to-[#e7eef8]">
       <div className="flex min-h-screen">
         <aside className="fixed left-0 top-0 z-40 flex h-screen w-72 flex-col bg-[#243b55] text-white shadow-2xl">
-          <div className="border-b border-white/10 px-6 py-6">
+          <div className="px-6 py-6 border-b border-white/10">
             <div className="flex items-center gap-4">
               <Image
                 src="/logo.png"
@@ -134,19 +134,19 @@ export default function TeacherDashboardPage() {
             </div>
           </nav>
 
-          <div className="border-t border-white/10 px-4 py-4">
+          <div className="px-4 py-4 border-t border-white/10">
             <button
               onClick={handleLogout}
-              className="w-full rounded-2xl bg-red-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-red-700"
+              className="w-full px-4 py-3 text-base font-semibold text-white transition bg-red-600 rounded-2xl hover:bg-red-700"
             >
               Logout
             </button>
           </div>
         </aside>
 
-        <main className="ml-72 w-full p-8">
+        <main className="w-full p-8 ml-72">
           <div className="space-y-6">
-            <div className="overflow-hidden rounded-3xl bg-white shadow-xl">
+            <div className="overflow-hidden bg-white shadow-xl rounded-3xl">
               <div className="bg-gradient-to-r from-[#243b55] to-[#35516f] px-8 py-10 text-white">
                 <h2 className="text-3xl font-bold">
                   Welcome to SCMS Teacher Dashboard
@@ -154,9 +154,28 @@ export default function TeacherDashboardPage() {
               </div>
             </div>
 
+            {/* VERSE MOVED ABOVE CLOCK */}
+            <div className="rounded-3xl bg-white p-8 shadow-xl ring-1 ring-[#e6edf6]">
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <h3 className="text-2xl font-bold text-[#243b55]">
+                  Verse of the Day
+                </h3>
+                <span className="inline-flex w-fit rounded-full bg-[#eef5ff] px-4 py-2 text-sm font-semibold text-[#35516f]">
+                  Daily Reflection
+                </span>
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-[#d9e6f5] bg-gradient-to-r from-[#f7fbff] to-[#eef5ff] p-6">
+                <p className="text-lg italic leading-8 text-gray-700">
+                  {dailyVerse}
+                </p>
+              </div>
+            </div>
+
+            {/* CLOCK + TEACHER PANEL */}
             <div className="grid gap-6 md:grid-cols-2">
               <div className="rounded-3xl bg-white p-6 shadow-xl ring-1 ring-[#e6edf6]">
-                <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                <p className="text-sm font-semibold tracking-wide text-gray-500 uppercase">
                   Live Clock
                 </p>
                 <h3 className="mt-3 text-4xl font-bold tracking-wide text-[#243b55]">
@@ -166,7 +185,7 @@ export default function TeacherDashboardPage() {
               </div>
 
               <div className="rounded-3xl bg-white p-6 shadow-xl ring-1 ring-[#e6edf6]">
-                <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                <p className="text-sm font-semibold tracking-wide text-gray-500 uppercase">
                   Teacher Panel
                 </p>
                 <h3 className="mt-3 text-4xl font-bold text-[#243b55]">
@@ -182,23 +201,6 @@ export default function TeacherDashboardPage() {
                 >
                   Open Classes
                 </button>
-              </div>
-            </div>
-
-            <div className="rounded-3xl bg-white p-8 shadow-xl ring-1 ring-[#e6edf6]">
-              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <h3 className="text-2xl font-bold text-[#243b55]">
-                  Verse of the Day
-                </h3>
-                <span className="inline-flex w-fit rounded-full bg-[#eef5ff] px-4 py-2 text-sm font-semibold text-[#35516f]">
-                  Daily Reflection
-                </span>
-              </div>
-
-              <div className="mt-5 rounded-2xl border border-[#d9e6f5] bg-gradient-to-r from-[#f7fbff] to-[#eef5ff] p-6">
-                <p className="text-lg italic leading-8 text-gray-700">
-                  {dailyVerse}
-                </p>
               </div>
             </div>
           </div>

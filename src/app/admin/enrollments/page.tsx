@@ -23,8 +23,10 @@ export default function AdminDashboardPage() {
 
   const homeActive = pathname === '/admin/dashboard';
   const enrollmentActive = pathname.startsWith('/admin/enrollments');
+  const userManagementActive = pathname.startsWith('/admin/users');
+  const gradesManagementActive = pathname.startsWith('/admin/grades');
 
-  useEffect(() => {
+    useEffect(() => {
     const storedUser = localStorage.getItem('user');
 
     if (!storedUser) {
@@ -104,7 +106,7 @@ export default function AdminDashboardPage() {
     <section className="min-h-screen bg-[#eef4fb]">
       <div className="flex min-h-screen">
         <aside className="fixed left-0 top-0 z-40 flex h-screen w-72 flex-col bg-[#243b55] text-white shadow-2xl">
-          <div className="border-b border-white/10 px-6 py-6">
+          <div className="px-6 py-6 border-b border-white/10">
             <div className="flex items-center gap-4">
               <Image
                 src="/logo.png"
@@ -120,33 +122,55 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <nav className="flex-1 px-4 py-6">
-            <div className="space-y-2">
-              <button
-                onClick={() => router.push('/admin/dashboard')}
-                className={`flex items-center w-full px-4 py-3 text-base font-semibold text-left transition rounded-xl ${
-                  homeActive
-                    ? 'bg-white/10 hover:bg-white/20'
-                    : 'hover:bg-white/10'
-                }`}
-              >
-                Home
-              </button>
+         <nav className="flex-1 px-4 py-6">
+  <div className="space-y-2">
 
-              <button
-                onClick={() => router.push('/admin/enrollments')}
-                className={`flex items-center w-full px-4 py-3 text-base font-semibold text-left transition rounded-xl ${
-                  enrollmentActive
-                    ? 'bg-white/10 hover:bg-white/20'
-                    : 'hover:bg-white/10'
-                }`}
-              >
-                Enrollment Form Records
-              </button>
-            </div>
-          </nav>
+    <button
+      onClick={() => router.push('/admin/dashboard')}
+      className={`flex items-center w-full px-4 py-3 text-base font-semibold text-left transition rounded-xl ${
+        homeActive
+          ? 'bg-white/10 hover:bg-white/20'
+          : 'hover:bg-white/10'
+      }`}
+    >
+      Home
+    </button>
 
-          <div className="border-t border-white/10 px-4 py-4">
+    <button
+      onClick={() => router.push('/admin/enrollments')}
+      className={`flex items-center w-full px-4 py-3 text-base font-semibold text-left transition rounded-xl ${
+        enrollmentActive
+          ? 'bg-white/10 hover:bg-white/20'
+          : 'hover:bg-white/10'
+      }`}
+    >
+      Enrollment Form Records
+    </button>
+
+    <button
+      onClick={() => router.push('/admin/users')}
+      className={`flex items-center w-full px-4 py-3 text-base font-semibold text-left transition rounded-xl ${
+        userManagementActive
+          ? 'bg-white/10 hover:bg-white/20'
+          : 'hover:bg-white/10'
+      }`}
+    >
+      User Account Management
+    </button>
+
+            <button
+              onClick={() => router.push('/admin/grades')}
+              className={`w-full px-4 py-3 rounded-2xl text-left font-semibold ${
+                gradesManagementActive ? 'bg-white/20' : 'hover:bg-white/10'
+              }`}
+            >
+              Grades Management
+            </button>
+
+  </div>
+</nav>
+
+          <div className="px-4 py-4 border-t border-white/10">
             <button
               onClick={handleLogout}
               className="w-full px-4 py-3 text-base font-semibold text-white transition bg-red-600 rounded-xl hover:bg-red-700"
@@ -159,9 +183,9 @@ export default function AdminDashboardPage() {
         <main className="w-full p-8 ml-72">
           <div
             id="enrollment-records"
-            className="overflow-hidden bg-white shadow-xl rounded-3xl"
+            className="flex min-h-[calc(100vh-64px)] flex-col overflow-hidden rounded-3xl bg-white shadow-xl"
           >
-            <div className="border-b bg-gray-50 px-6 py-5">
+            <div className="px-6 py-5 border-b bg-gray-50">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <h3 className="text-2xl font-bold text-[#243b55]">
                   Enrollment Form Records
@@ -172,19 +196,21 @@ export default function AdminDashboardPage() {
                   placeholder="Search full name, grade level, school year..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:border-blue-600 md:w-96"
+                  className="w-full px-4 py-3 text-sm border border-gray-300 outline-none rounded-xl focus:border-blue-600 md:w-96"
                 />
               </div>
             </div>
 
             {loading ? (
-              <div className="p-8 text-lg text-gray-600">Loading enrollments...</div>
+              <div className="flex-1 p-8 text-lg text-gray-600">
+                Loading enrollments...
+              </div>
             ) : filteredEnrollments.length === 0 ? (
-              <div className="p-8 text-lg text-gray-600">
+              <div className="flex-1 p-8 text-lg text-gray-600">
                 No enrollment form records found.
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="flex-1 overflow-x-auto">
                 <table className="min-w-full border-collapse">
                   <thead className="bg-[#e9eef5]">
                     <tr>
@@ -206,26 +232,26 @@ export default function AdminDashboardPage() {
                     </tr>
                   </thead>
 
-                  <tbody>
+                  <tbody className="align-top">
                     {filteredEnrollments.map((item) => (
                       <tr key={item.id} className="hover:bg-blue-50/40">
-                        <td className="border-b px-6 py-4 text-sm text-gray-800">
+                        <td className="px-6 py-4 text-sm text-gray-800 border-b">
                           {item.full_name}
                         </td>
-                        <td className="border-b px-6 py-4 text-sm text-gray-800">
+                        <td className="px-6 py-4 text-sm text-gray-800 border-b">
                           {item.grade_level_to_enroll}
                         </td>
-                        <td className="border-b px-6 py-4 text-sm text-gray-800">
+                        <td className="px-6 py-4 text-sm text-gray-800 border-b">
                           {item.school_year}
                         </td>
-                        <td className="border-b px-6 py-4 text-sm text-gray-800">
+                        <td className="px-6 py-4 text-sm text-gray-800 border-b">
                           {new Date(item.created_at).toLocaleDateString('en-US')}
                         </td>
-                        <td className="border-b px-6 py-4 text-sm">
-                          <div className="flex flex-wrap gap-2">
+                        <td className="px-6 py-4 text-sm border-b">
+                          <div className="flex items-center gap-2 whitespace-nowrap">
                             <button
                               onClick={() => router.push(`/admin/enrollments/${item.id}`)}
-                              className="rounded-xl bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800"
+                              className="px-4 py-2 font-medium text-white transition bg-blue-700 rounded-xl hover:bg-blue-800"
                             >
                               View
                             </button>
@@ -234,14 +260,14 @@ export default function AdminDashboardPage() {
                               onClick={() =>
                                 router.push(`/admin/enrollments/${item.id}/edit`)
                               }
-                              className="rounded-xl bg-amber-500 px-4 py-2 font-medium text-white transition hover:bg-amber-600"
+                              className="px-4 py-2 font-medium text-white transition rounded-xl bg-amber-500 hover:bg-amber-600"
                             >
                               Update
                             </button>
 
                             <button
                               onClick={() => handleDelete(item.id)}
-                              className="rounded-xl bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700"
+                              className="px-4 py-2 font-medium text-white transition bg-red-600 rounded-xl hover:bg-red-700"
                             >
                               Delete
                             </button>

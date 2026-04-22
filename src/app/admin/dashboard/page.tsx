@@ -84,6 +84,7 @@ export default function AdminDashboardPage() {
   const homeActive = pathname === '/admin/dashboard';
   const enrollmentActive = pathname.startsWith('/admin/enrollments');
   const userManagementActive = pathname.startsWith('/admin/users');
+  const gradesManagementActive = pathname.startsWith('/admin/grades');
 
   const formattedTime = useMemo(() => {
     return currentTime.toLocaleTimeString([], {
@@ -153,7 +154,18 @@ export default function AdminDashboardPage() {
             >
               User Account Management
             </button>
+
+            <button
+              onClick={() => router.push('/admin/grades')}
+              className={`w-full px-4 py-3 rounded-2xl text-left font-semibold ${
+                gradesManagementActive ? 'bg-white/20' : 'hover:bg-white/10'
+              }`}
+            >
+              Grades Management
+            </button>
+
           </nav>
+          
 
           <div className="p-4 border-t border-white/10">
             <button

@@ -7,6 +7,8 @@ type RouteContext = {
   };
 };
 
+const VALID_ROLES = ['admin', 'teacher', 'student'] as const;
+
 export async function GET(_req: NextRequest, context: RouteContext) {
   try {
     const id = Number(context.params.id);
@@ -69,33 +71,23 @@ export async function PUT(req: NextRequest, context: RouteContext) {
       );
     }
 
-    const {
-      full_name,
-      email,
-      password,
-      role,
-      is_active,
-      dashboard_access,
-    } = await req.json();
+    const body = await req.json();
 
-    if (!full_name || !email || !password || !role || !dashboard_access) {
+    const full_name = String(body.full_name ?? '').trim();
+    const email = String(body.email ?? '').trim();
+    const password = String(body.password ?? '').trim();
+    const role = String(body.role ?? '').trim().toLowerCase();
+
+    if (!full_name || !email || !password || !role) {
       return NextResponse.json(
         { success: false, message: 'Please fill in all required fields.' },
         { status: 400 }
       );
     }
 
-    const validRoles = ['admin', 'teacher', 'student'];
-    if (!validRoles.includes(role)) {
+    if (!VALID_ROLES.includes(role as (typeof VALID_ROLES)[number])) {
       return NextResponse.json(
         { success: false, message: 'Invalid role.' },
-        { status: 400 }
-      );
-    }
-
-    if (!validRoles.includes(dashboard_access)) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid dashboard access.' },
         { status: 400 }
       );
     }
@@ -112,7 +104,8 @@ export async function PUT(req: NextRequest, context: RouteContext) {
       );
     }
 
-    const activeValue = Number(is_active) === 0 ? 0 : 1;
+    const activeValue = Number(body.is_active) === 0 ? 0 : 1;
+    const dashboard_access = role;
 
     const [result]: any = await pool.execute(
       `
